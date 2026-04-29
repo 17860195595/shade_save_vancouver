@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>About — ShadeSafe Vancouver</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="about-page">
+    <header class="app-navbar">
+      <div class="brand-title">
+        <span class="brand-dot" aria-hidden="true"></span>
+        ShadeSafe Vancouver
+      </div>
+      <button
+        type="button"
+        class="menu-icon-btn"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#mainMenu"
+        aria-label="Open menu"
+      >
+        ☰
+      </button>
+    </header>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="mainMenu" aria-labelledby="mainMenuLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="mainMenuLabel">Menu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <ul class="list-unstyled">
+          <li class="mb-2"><a href="index.html">Map</a></li>
+          <li class="mb-2"><a href="about.html">About</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <main>
+      <div class="about-hero">
+        <div class="about-icon" aria-hidden="true">🌿</div>
+        <h1 class="h4 mb-2">ShadeSafe Vancouver</h1>
+        <p class="mb-0 text-muted">Live heat-stress awareness for public spaces — map-first, mobile-first, community-powered.</p>
+      </div>
+
+      <section class="about-card">
+        <h2>How risk scores work</h2>
+        <p class="small mb-0">
+          ShadeSafe blends <strong>temperature</strong>, <strong>UV index</strong>, <strong>tree and canopy shade</strong> (as a 0–100% “shade score” per
+          location), and <strong>solar elevation</strong> from SunCalc for Vancouver. Map pins are <strong>Vancouver parks</strong> from the City’s
+          <strong>parks</strong> open dataset (not hand-picked). As the sun climbs, exposed plazas and beaches heat up faster than
+          well-treed parks. The time slider lets you preview how risk shifts through the day using the same model.
+        </p>
+      </section>
+
+      <section class="about-card">
+        <h2>Community reporting</h2>
+        <ul class="small mb-0 ps-3">
+          <li><strong>Too hot</strong> — pins a hot spot on the heatmap for others.</li>
+          <li><strong>Great shade</strong> — highlights relief; the heatmap can cool slightly at that pin.</li>
+          <li><strong>Needs shade structure</strong> — flags where infrastructure like sails or plantings would help most.</li>
+        </ul>
+      </section>
+
+      <section class="about-card">
+        <h2>Heat layer &amp; colours</h2>
+        <p class="small mb-2">
+          The <strong>heatmap</strong> is separate from the <strong>green park rings</strong> (those only mark park locations from open data). Small
+          <strong>green dots</strong> are street trees loaded for your current map view.
+        </p>
+        <p class="small mb-2">
+          Each park pin feeds the heat layer with an intensity based on <strong>how little shade</strong> the model estimates there (lower shade score → more
+          “sun exposure”) and <strong>how high the sun is</strong> at the hour you set on the slider. Slider times are
+          <strong>Vancouver local</strong> (America/Vancouver), not your device time zone. At night the sun factor is near zero, so the layer should read cooler unless
+          community “too hot” pins add heat.
+        </p>
+        <p class="small mb-2">
+          Colours run from green (more shade / lower intensity) through orange to red. <strong>Lighter red</strong> sits in the mid-high range of that scale;
+          <strong>darker red</strong> is the strongest blend. Nearby points <strong>overlap and blur</strong>, so dense areas can look deeper red than a single
+          isolated pin.
+        </p>
+        <p class="small mb-0">
+          <strong>Community reports</strong> tweak the layer: “Too hot” adds a strong warm bump at that spot; “Great shade” nudges it cooler there.
+        </p>
+      </section>
+
+      <section class="about-card">
+        <h2>Built by</h2>
+        <p class="small mb-2">BCIT CST 2026 — course prototype / MVP.</p>
+        <p class="small mb-0"><strong>Stack:</strong> HTML5, CSS3, ES modules, Bootstrap 5, Leaflet + Leaflet.heat, SunCalc.js, Node.js, Express, MongoDB, Mongoose.</p>
+      </section>
+
+      <section class="about-card">
+        <h2>Data sources</h2>
+        <div class="data-source-row">
+          <span class="ds-dot" aria-hidden="true"></span>
+          <span>Parks (map pins) — opendata.vancouver.ca, dataset «parks»</span>
+          <span class="badge-free">Free</span>
+        </div>
+        <div class="data-source-row">
+          <span class="ds-dot" aria-hidden="true"></span>
+          <span>Public Trees — opendata.vancouver.ca</span>
+          <span class="badge-free">Free</span>
+        </div>
+        <div class="data-source-row">
+          <span class="ds-dot" aria-hidden="true"></span>
+          <span>Building footprints — municipal open data</span>
+          <span class="badge-free">Free</span>
+        </div>
+        <div class="data-source-row">
+          <span class="ds-dot" aria-hidden="true"></span>
+          <span>Weather API — Open-Meteo</span>
+          <span class="badge-free">Free</span>
+        </div>
+        <div class="data-source-row">
+          <span class="ds-dot" aria-hidden="true"></span>
+          <span>Sun angle — SunCalc.js</span>
+          <span class="badge-free">Free</span>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary">
+      <a href="index.html" class="nav-item" id="nav-tab-map">
+        <span class="nav-ico" aria-hidden="true">🗺️</span>
+        <span>Map</span>
+      </a>
+      <a href="index.html?panel=alerts" class="nav-item" id="nav-tab-alerts-about">
+        <span class="nav-ico" aria-hidden="true">⚠️</span>
+        <span>Alerts</span>
+      </a>
+      <span class="nav-item active" id="nav-tab-about">
+        <span class="nav-ico" aria-hidden="true">ℹ️</span>
+        <span>About</span>
+      </span>
+    </nav>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
