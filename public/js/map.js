@@ -20,6 +20,12 @@ import { persistLastHighRecord, renderLastHighAlert } from './lastHighAlert.js';
 
 const VAN = { lat: 49.2827, lng: -123.1207 };
 
+/** Stand-in when GPS is unavailable (typical on desktops without a fix). Same as map default center. */
+const MOCK_USER_LOCATION = { lat: VAN.lat, lng: VAN.lng };
+if (typeof window !== 'undefined') {
+  window.__shadeSafeMockUserLatLng = { ...MOCK_USER_LOCATION };
+}
+
 let dataHealth = { treeCount: 0, buildingCount: 0, parkCount: 0 };
 
 async function loadDataHealth() {
@@ -310,8 +316,18 @@ async function evaluateUserRisk() {
   }
 }
 
-function addUserMarker(latlng) {
-  const html = `<div class="user-pulse"><div class="user-dot"></div></div>`;
+function setUserLocationFromLatLng(latlng, isMock) {
+  userLatLng = { lat: latlng.lat, lng: latlng.lng };
+  if (typeof window !== 'undefined') {
+    window.__shadeSafeUserLatLng = userLatLng;
+    window.__shadeSafeUserLocationIsMock = isMock;
+  }
+}
+
+function addUserMarker(latlng, isMock = false) {
+  const pulseCls = isMock ? ' user-pulse--mock' : '';
+  const dotCls = isMock ? ' user-dot--mock' : '';
+  const html = `<div class="user-pulse${pulseCls}"><div class="user-dot${dotCls}"></div></div>`;
   const icon = L.divIcon({
     className: 'user-marker-wrap',
     html,
@@ -319,24 +335,33 @@ function addUserMarker(latlng) {
     iconAnchor: [12, 12],
   });
   if (userMarker) map.removeLayer(userMarker);
-  userMarker = L.marker(latlng, { icon }).addTo(map);
+  userMarker = L.marker(latlng, {
+    icon,
+    title: isMock ? 'Simulated location (no device GPS)' : 'Your location',
+  }).addTo(map);
+}
+
+function applyMockUserLocation() {
+  const latlng = L.latLng(MOCK_USER_LOCATION.lat, MOCK_USER_LOCATION.lng);
+  setUserLocationFromLatLng(latlng, true);
+  addUserMarker(latlng, true);
+  map.setView(latlng, 13);
 }
 
 function setupGeolocation() {
   if (!navigator.geolocation) {
-    map.setView([VAN.lat, VAN.lng], 13);
+    applyMockUserLocation();
     return;
   }
   navigator.geolocation.watchPosition(
     (pos) => {
       const latlng = L.latLng(pos.coords.latitude, pos.coords.longitude);
-      userLatLng = { lat: latlng.lat, lng: latlng.lng };
-      addUserMarker(latlng);
+      setUserLocationFromLatLng(latlng, false);
+      addUserMarker(latlng, false);
       map.panTo(latlng, { animate: true, duration: 0.35 });
     },
     () => {
-      userLatLng = null;
-      map.setView([VAN.lat, VAN.lng], 13);
+      applyMockUserLocation();
     },
     { enableHighAccuracy: true, maximumAge: 10000, timeout: 15000 }
   );
@@ -471,7 +496,7 @@ function setupMapShell() {
       <div class="map-heat-legend__title">Heat layer</div>
       <div class="map-heat-legend__gradient" aria-hidden="true"></div>
       <div class="map-heat-legend__labels"><span>More shade</span><span>More sun / heat</span></div>
-      <p class="map-heat-legend__note">Green dots = city trees in the current view (updates when you pan or zoom). Green pins = Vancouver parks from the City «parks» open dataset. Heat uses shade scores, sun angle, and the time slider — plus community pins.</p>
+      <p class="map-heat-legend__note">Green dots = city trees in the current view (updates when you pan or zoom). Green pins = Vancouver parks from the City «parks» open dataset. Rounded pins with 🔥 / 🌳 / 🏗️ = community reports (Too hot / Great shade / Needs structure). Heat uses shade scores, sun angle, and the time slider — plus those reports.</p>
     `;
     L.DomEvent.disableClickPropagation(div);
     L.DomEvent.disableScrollPropagation(div);

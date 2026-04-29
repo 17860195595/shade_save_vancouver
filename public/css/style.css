@@ -243,6 +243,16 @@ body {
   z-index: 1;
 }
 
+/* Simulated desktop fallback when device GPS is unavailable */
+.user-pulse--mock::before {
+  background: rgba(232, 148, 28, 0.38);
+}
+
+.user-dot--mock {
+  background: var(--warning-amber);
+  box-shadow: 0 0 0 1px rgba(232, 148, 28, 0.35);
+}
+
 @keyframes pulse {
   0% {
     transform: scale(0.7);
@@ -358,6 +368,51 @@ body {
 }
 
 .leaflet-tooltip-top.park-marker-tooltip::before {
+  border-top-color: var(--surface) !important;
+}
+
+/* Community report pins on map (distinct per report type) */
+.report-marker-wrap {
+  background: transparent !important;
+  border: none !important;
+}
+
+.report-map-pin {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2.5px solid var(--report-ring, #5c6b62);
+  box-shadow: 0 2px 10px rgba(20, 34, 26, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.report-map-pin__ico {
+  font-size: 15px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.leaflet-tooltip.report-marker-tooltip {
+  background: var(--surface-glass) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border-strong) !important;
+  border-radius: var(--radius-sm) !important;
+  box-shadow: var(--shadow-md) !important;
+  color: var(--text) !important;
+  font-family: var(--font) !important;
+  font-weight: 600 !important;
+  font-size: 0.72rem !important;
+  padding: 6px 10px !important;
+  max-width: 220px;
+}
+
+.leaflet-tooltip-top.report-marker-tooltip::before {
   border-top-color: var(--surface) !important;
 }
 

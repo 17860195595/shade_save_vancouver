@@ -33,7 +33,7 @@ function setModalError(visible, msg) {
   box.classList.toggle('d-none', !visible);
 }
 
-async function getCoords() {
+function getCoordsFromNavigator() {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
       reject(new Error('no geo'));
@@ -42,9 +42,26 @@ async function getCoords() {
     navigator.geolocation.getCurrentPosition(
       (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
       () => reject(new Error('denied')),
-      { enableHighAccuracy: true, timeout: 10000 }
+      { enableHighAccuracy: true, maximumAge: 30000, timeout: 12000 }
     );
   });
+}
+
+/** Prefer live GPS; otherwise same stand-in as the map (see map.js MOCK_USER_LOCATION). */
+async function resolveCoordsForReport() {
+  try {
+    return await getCoordsFromNavigator();
+  } catch {
+    const u = window.__shadeSafeUserLatLng;
+    if (u && Number.isFinite(u.lat) && Number.isFinite(u.lng)) {
+      return { lat: u.lat, lng: u.lng };
+    }
+    const m = window.__shadeSafeMockUserLatLng;
+    if (m && Number.isFinite(m.lat) && Number.isFinite(m.lng)) {
+      return { lat: m.lat, lng: m.lng };
+    }
+    throw new Error('no position');
+  }
 }
 
 function setupOptionCards() {
@@ -70,9 +87,9 @@ function setupSubmit() {
     }
     let coords;
     try {
-      coords = await getCoords();
+      coords = await resolveCoordsForReport();
     } catch {
-      setModalError(true, 'Location is required. Allow location access and try again.');
+      setModalError(true, 'Could not determine location. Reload the page and try again.');
       return;
     }
     try {
