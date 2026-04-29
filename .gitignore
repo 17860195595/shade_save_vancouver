@@ -5,6 +5,8 @@ node_modules/
 .env
 .env.*.local
 
+package-lock.json
+
 # Logs & OS
 npm-debug.log*
 .DS_Store
