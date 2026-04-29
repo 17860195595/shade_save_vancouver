@@ -3,6 +3,10 @@ import { refreshAfterReport } from './heatmap.js';
 const MODAL_ID = 'reportModal';
 const TOAST_ID = 'report-toast';
 const ALERT_ID = 'report-error-alert';
+const TOAST_VISIBLE_CLASS = 'report-toast--visible';
+/** Avoid clashing with Bootstrap’s `.show`; keep timer off the DOM node. */
+let toastHideTimer = null;
+const TOAST_MS = 3200;
 
 function showToast(message) {
   let el = document.getElementById(TOAST_ID);
@@ -11,14 +15,19 @@ function showToast(message) {
     el.id = TOAST_ID;
     el.className = 'report-toast';
     el.setAttribute('role', 'status');
+    el.setAttribute('aria-live', 'polite');
+    el.setAttribute('aria-hidden', 'true');
     document.body.appendChild(el);
   }
   el.textContent = message;
-  el.classList.add('show');
-  clearTimeout(el._hide);
-  el._hide = setTimeout(() => {
-    el.classList.remove('show');
-  }, 3000);
+  el.setAttribute('aria-hidden', 'false');
+  el.classList.add(TOAST_VISIBLE_CLASS);
+  clearTimeout(toastHideTimer);
+  toastHideTimer = setTimeout(() => {
+    toastHideTimer = null;
+    el.classList.remove(TOAST_VISIBLE_CLASS);
+    el.setAttribute('aria-hidden', 'true');
+  }, TOAST_MS);
 }
 
 function getSelectedReportType() {
